@@ -1,4 +1,4 @@
-package com.hasher.controller;
+package com.hasher.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
