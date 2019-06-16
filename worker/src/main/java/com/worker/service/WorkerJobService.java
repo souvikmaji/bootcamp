@@ -3,6 +3,8 @@ package com.worker.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -14,51 +16,16 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class WorkerJobService {
-	public void executeWorkersJob() {
-		try {
-			System.out.println("Starting job");
-			computeHash(getToken(10));
-		} finally {
-			System.out.println("Worker job has finished...");
-		}
-	}
+	private static final Logger logger = LogManager.getLogger(WorkerJobService.class);
+	private RestTemplate restTemplate;
 
-	private String getToken(int size) throws RestClientException {
-		MultiValueMap<String, String> headers = getHeader();
-		Map<String, String> req_payload = new HashMap<String, String>();
+	private MultiValueMap<String, String> headers;
 
-		HttpEntity<?> request = new HttpEntity<>(req_payload, headers);
-		String url = "http://localhost:8080/stg/tokens/" + size;
-
-		// Create a new RestTemplate instance
-		RestTemplate restTemplate = new RestTemplate();
-
-		// Add the String message converter
+	public WorkerJobService() {
+		restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 
-		Map<String, String> response = restTemplate.getForObject(url, Map.class);
-
-		System.out.println(response.get("token"));
-		return response.get("token");
-	}
-
-	private void computeHash(String token) throws RestClientException {
-		MultiValueMap<String, String> headers = getHeader();
-		Map<String, String> req_payload = new HashMap<String, String>();
-		req_payload.put("token", token);
-
-		HttpEntity<?> request = new HttpEntity<>(req_payload, headers);
-		String url = "http://localhost:8090/hasher";
-
-		// Create a new RestTemplate instance
-		RestTemplate restTemplate = new RestTemplate();
-
-		// Add the String message converter
-		restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-
-		ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-
-		System.out.println(response);
+		headers = getHeader();
 	}
 
 	private MultiValueMap<String, String> getHeader() {
@@ -67,6 +34,36 @@ public class WorkerJobService {
 		map.put("Content-Type", "application/json");
 		headers.setAll(map);
 		return headers;
+	}
+
+	public void executeWorkersJob() {
+		logger.trace("Starting job");
+
+		computeHash(getToken(10));
+
+		logger.trace("Worker job has finished...");
+	}
+
+	private String getToken(int size) throws RestClientException {
+
+		String url = "http://localhost:8080/stg/tokens/" + size;
+
+		Map<String, String> response = restTemplate.getForObject(url, Map.class);
+
+		logger.trace("{}", response);
+		return response.get("token");
+	}
+
+	private void computeHash(String token) throws RestClientException {
+		Map<String, String> payload = new HashMap<String, String>();
+		payload.put("token", token);
+
+		HttpEntity<?> request = new HttpEntity<>(payload, headers);
+		String url = "http://localhost:8090/hasher";
+
+		ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+		logger.trace("response: {}", response);
 	}
 
 }

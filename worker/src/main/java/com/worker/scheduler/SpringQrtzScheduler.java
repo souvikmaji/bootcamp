@@ -2,6 +2,8 @@ package com.worker.scheduler;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.JobDetail;
 import org.quartz.SimpleTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +24,17 @@ import com.worker.config.AutoWiringSpringBeanJobFactory;
 public class SpringQrtzScheduler {
 	@Autowired
 	private ApplicationContext applicationContext;
+	private static final Logger logger = LogManager.getLogger(WorkerJob.class);
 
 	@PostConstruct
 	public void init() {
-		System.out.println("Hello world from Spring...");
+		logger.info("Initializing Scheduler");
 	}
 	
 	@Bean
     public SpringBeanJobFactory springBeanJobFactory() {
         AutoWiringSpringBeanJobFactory jobFactory = new AutoWiringSpringBeanJobFactory();
-        System.out.println("Configuring Job factory");
+		logger.info("Configuring Job factory");
 
         jobFactory.setApplicationContext(applicationContext);
         return jobFactory;
@@ -42,7 +45,7 @@ public class SpringQrtzScheduler {
         SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
         schedulerFactory.setConfigLocation(new ClassPathResource("quartz.properties"));
 
-        System.out.println("Setting the Scheduler up");
+		logger.info("Setting the Scheduler up");
         schedulerFactory.setJobFactory(springBeanJobFactory());
         schedulerFactory.setJobDetails(job);
         schedulerFactory.setTriggers(trigger);
@@ -67,7 +70,7 @@ public class SpringQrtzScheduler {
         trigger.setJobDetail(job);
 
         int frequencyInSec = 10;
-        System.out.printf("Configuring trigger to fire every %d seconds\n", frequencyInSec);
+		logger.info("Configuring trigger to fire every " + frequencyInSec + " seconds");
 
         trigger.setRepeatInterval(frequencyInSec * 1000);
         trigger.setRepeatCount(SimpleTrigger.REPEAT_INDEFINITELY);

@@ -1,5 +1,7 @@
 package com.worker.scheduler;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -12,10 +14,10 @@ import com.worker.service.WorkerJobService;
 public class WorkerJob implements Job {
 	@Autowired
 	private WorkerJobService jobService;
+	private static final Logger logger = LogManager.getLogger(WorkerJob.class);
 
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-
-		System.out.printf("Job %s fired at %s", context.getJobDetail().getKey().getName(), context.getFireTime());
+		logger.trace("Job " + context.getJobDetail().getKey().getName() + " fired at " + context.getFireTime());
 		jobService.executeWorkersJob();
 	}
 
