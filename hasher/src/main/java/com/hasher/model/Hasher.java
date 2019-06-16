@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Hasher {
+	private static final String ALGORITHM = "SHA-256";
 	private String hash;
 	private String token;
 
@@ -12,7 +13,7 @@ public class Hasher {
 		try {
 
 			// Static getInstance method is called with hashing SHA
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			MessageDigest md = MessageDigest.getInstance(ALGORITHM);
 
 			// digest() method called
 			// to calculate message digest of an input
@@ -35,7 +36,7 @@ public class Hasher {
 
 		// For specifying wrong message digest algorithms
 		catch (NoSuchAlgorithmException e) {
-			System.out.println("Exception thrown" + " for incorrect algorithm: " + e);
+			System.out.println("Exception thrown" + e + " for incorrect algorithm: " + ALGORITHM);
 
 			return null;
 		}
