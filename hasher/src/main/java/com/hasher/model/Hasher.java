@@ -9,6 +9,10 @@ public class Hasher {
 	private String hash;
 	private String token;
 
+//	public Hasher(String token) {
+//		this.token = token;
+//	}
+
 	public String computeHash() {
 		try {
 
@@ -48,5 +52,10 @@ public class Hasher {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("{hash: %s}", this.getHash());
 	}
 }

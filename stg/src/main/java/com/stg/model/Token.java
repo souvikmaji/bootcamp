@@ -23,4 +23,10 @@ public class Token {
 	public String getToken() {
 		return new String(buf);
 	}
+
+	@Override
+	public String toString() {
+		return String.format("{token: %s}", this.getToken());
+	}
+
 }
