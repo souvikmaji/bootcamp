@@ -17,7 +17,7 @@ public class WorkerJob implements Job {
 	private static final Logger logger = LogManager.getLogger(WorkerJob.class);
 
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		logger.trace("Job " + context.getJobDetail().getKey().getName() + " fired at " + context.getFireTime());
+		logger.info("Job " + context.getJobDetail().getKey().getName() + " fired at " + context.getFireTime());
 		jobService.executeWorkersJob();
 	}
 

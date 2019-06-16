@@ -37,11 +37,11 @@ public class WorkerJobService {
 	}
 
 	public void executeWorkersJob() {
-		logger.trace("Starting job");
+		logger.info("Starting job");
 
 		computeHash(getToken(10));
 
-		logger.trace("Worker job has finished...");
+		logger.info("Worker job has finished...");
 	}
 
 	private String getToken(int size) throws RestClientException {
@@ -50,7 +50,7 @@ public class WorkerJobService {
 
 		Map<String, String> response = restTemplate.getForObject(url, Map.class);
 
-		logger.trace("{}", response);
+		logger.info("{}", response);
 		return response.get("token");
 	}
 
@@ -63,7 +63,7 @@ public class WorkerJobService {
 
 		ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
-		logger.trace("response: {}", response);
+		logger.info("response: {}", response);
 	}
 
 }
