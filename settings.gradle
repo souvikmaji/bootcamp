@@ -9,4 +9,6 @@
 
 rootProject.name = 'bootcamp'
 
-include 'hasher stg worker'
+include 'hasher'
+include 'worker'
+include 'stg'
